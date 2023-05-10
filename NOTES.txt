@@ -1,0 +1,32 @@
+
+Password in email was correct
+It was the URL that needed /?admin
+
+For James,
+used wget to download jar files -- remember to click one page further to get to the real URL
+
+For now we are using the previous 'stable' release.  This is because the newer release had a
+broken link for the "Binary (ZIP Format) for Spring wiring"
+
+It is the Spring wiring download that has the ./bin/james program in it.
+
+For a port scan:
+
+   sudo nmap -p0-1024 localhsot
+
+This showed that the VM already had an email server running: exim4
+
+  sudo systemctl stop exim4
+  
+
+Currently in the 'previous-version' directory in /home/aimail/
+
+
+To run it:
+
+  sudo ./bin/james start
+
+
+https://james.apache.org/server/install.html
+https://www.linuxbabe.com/redhat/run-your-own-email-server-centos-postfix-smtp-server
+
