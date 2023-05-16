@@ -1,0 +1,79 @@
+#changing log so we can make a new one
+mv log log.chckpt2
+mkdir log
+
+then start james
+the less log/wrapper.log
+
+
+
+#IN PERSONAL SSH - shows ports on local host, 2525 is our smtp
+sudo nmap -p0-10000 localhost
+
+telnet 127.0.0.1 2525 # can try 2413 etc for all 2000 port numbers, our ports were usually a 2 in front of the normal ones
+then type quit
+
+
+#google: james email quickstart
+
+
+#step 6:
+cd bin
+  * ./james-cli -h localhost -p 2999 adddomain email-ai.interactwith.us
+
+
+try getting to work
+
+add user, enc4 thenpassword
+on ateaspace, enc4@email-ai.interactwith.us 12345
+
+in personal 
+cd /var/www/html/
+
+
+
+getting rainloop:
+
+enc4@email-ai:~$ cd /var/www/html
+enc4@email-ai:/var/www/html$ ls
+index.html  rainloop  rainloop-ateaspace  rainloop-emma
+enc4@email-ai:/var/www/html$ sudo mkdir rainloop-enc4
+enc4@email-ai:/var/www/html$ sudo chown enc4 rainloop-enc4
+enc4@email-ai:/var/www/html$ ls
+index.html  rainloop  rainloop-ateaspace  rainloop-davidb  rainloop-emma  rainloop-enc4
+enc4@email-ai:/var/www/html$ cp rainloop-ateaspace/rainloop-installer.php rainloop-enc4/.
+enc4@email-ai:/var/www/html$ xd rainloop-enc4/
+-bash: xd: command not found
+enc4@email-ai:/var/www/html$ cd rainloop-enc4/
+enc4@email-ai:/var/www/html/rainloop-enc4$ php rainloop-installer.php 
+
+
+       [RainLoop Webmail Installer]
+
+
+ * Connecting to repository ...
+ * Downloading package ...
+ * Complete downloading!
+ * Installing package ...
+ * Complete installing!
+
+ * [Success] Installation is finished!
+
+enc4@email-ai:/var/www/html/rainloop-enc4$ ls
+data  index.php  rainloop  rainloop-installer.php
+enc4@email-ai:/var/www/html/rainloop-enc4$ 
+
+
+then to go to email-ai.interactwith.us/rainloop-uruserhere/?admin
+
+add domain 
+imap server is localhost, port is 2143
+smtp server is localhost, port is 2525
+
+then add
+
+then go to email-ai.interactwith.us/rainloop-uruserhere/
+
+log in with ur emai, password is 12345
+
+should be able to send and recieve emails within server
