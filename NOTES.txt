@@ -30,3 +30,10 @@ To run it:
 https://james.apache.org/server/install.html
 https://www.linuxbabe.com/redhat/run-your-own-email-server-centos-postfix-smtp-server
 
+
+To run james as a regular user, edit the following conf files related to:
+
+  imap
+  smtp
+  pop3
+  jmx.properties
