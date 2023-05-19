@@ -74,6 +74,6 @@ then add
 
 then go to email-ai.interactwith.us/rainloop-uruserhere/
 
-log in with ur emai, password is 12345
+log in with ur email, password is 12345
 
 should be able to send and recieve emails within server
