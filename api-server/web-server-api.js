@@ -23,7 +23,7 @@ app.get('/api/getInfo', (req,res) => {
     console.log("API /getInfo called");
 
     // Fake some interesting data to return
-    returnJSON = { "status": "ok", "info": { "exampleText": "example", "exampleVals" [ 1, 2, 3] } };
+    returnJSON = { "status": "ok", "info": { "exampleText": "example", "exampleVals": [ 1, 2, 3] } };
 		   
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(returnJSON));    	   
