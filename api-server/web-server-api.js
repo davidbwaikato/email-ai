@@ -4,6 +4,17 @@ const express = require('express');
 const cors    = require('cors');
 const http    = require('http');
 
+
+
+const { Configuration, OpenAIApi } = require("openai");
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
+
+
 //
 // Instantiate web-server 
 //
@@ -38,6 +49,29 @@ app.get('/getInfoAdvanced/:testParam', (req, res) => {
     returnedParam = testParam.toUpperCase();
     
     returnJSON = { "status": "ok", "info": { "exampleText": returnedParam } };
+    
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));    	   
+
+});
+
+app.get('/tldr', async (req, res) => {
+
+    const text_in = req.query.text
+    
+    const response = await openai.createCompletion({
+	model: "text-davinci-003",
+	prompt: text_in,
+	temperature: 0.7,
+	max_tokens: 60,
+	top_p: 1.0,
+	frequency_penalty: 0.0,
+	presence_penalty: 1,
+    });
+
+    const text_out = response.data.choices
+    
+    returnJSON = { "status": "ok", "info": { "text": text_out } };
     
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(returnJSON));    	   
