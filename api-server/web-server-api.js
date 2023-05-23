@@ -18,7 +18,7 @@ console.log("Allowing CORS access");
 app.use(cors());
 
 
-app.get('/api/getInfo', (req,res) => {
+app.get('/getInfo', (req,res) => {
     
     console.log("API /getInfo called");
 
@@ -30,7 +30,7 @@ app.get('/api/getInfo', (req,res) => {
 });
 
 
-app.get('/api/getInfoAdvanced/:testParam', (req, res) => {
+app.get('/getInfoAdvanced/:testParam', (req, res) => {
     testParam = req.params.testParam;
     console.log("API /test called with request param: " + testParam);
 
@@ -50,10 +50,11 @@ app.get('/', (req, res) => {
 });
 
 
-// The following can be used as a 'catch all', if needed
-//
-// app.get('*', (req, res) => {
-// });
+// The following can be used as a 'catch all', if required/needed
+app.get('*', (req, res) => {
+    console.error("404 Error - Unrecognized request: " + req.path);
+    res.sendStatus(404);
+});
 
 
 server.listen(httpPort, () => {
