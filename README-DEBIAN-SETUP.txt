@@ -1,6 +1,8 @@
 
 sudo apt-get install emacs-nox wget npm
-     
+
+sudo apt-get install nmap
+
 sudo apt-get install php
 
 # There were a couple of other php-flavoured packages to install
