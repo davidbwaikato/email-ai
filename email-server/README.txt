@@ -2,6 +2,28 @@
 # One-time Setup
 ####
 
+    unzip james-server-app-3.6.2-app.zip
+
+## TLDR
+
+For the 'davidb' user, operate in the 7000s range:
+
+    cp -r conf-7000/* james-server-app-3.6.2/conf/.
+
+    cd james-server-app-3.6.2
+
+    ./bin/james start
+    sleep 5 && ./bin/james status
+
+    nmap -p0-10000 localhost
+    
+    ./bin/james-cli.sh -h localhost -p 7999 AddDomain email-ai.interactwith.us
+    ./bin/james-cli.sh -h localhost -p 7999 AddUser davidb@email-ai.interactwith.us 12345
+    ./bin/james-cli.sh -h localhost -p 7999 AddUser annetteb@email-ai.interactwith.us 12345
+
+## In More Detail
+
+
 Having unzipped the Java binary distribution, james-server-app-3.6.2-app.zip,
 you need to change 4 config files so the various ports the email server
 responds to are in a range that can be run by a regular user, and don't
