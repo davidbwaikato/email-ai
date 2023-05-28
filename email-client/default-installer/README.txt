@@ -1,23 +1,35 @@
-Assuming you have an Apache James Email server setup and running in the '2000s' range, then:
-
-
-To create your own privately installed rainloop email client front end,
-assuming your username is 'testuser'
-
-# Remember the diretory where *this* README.text and the rainloop-installer.php files are
 #
-% source_dir="$PWD"
-
-# Now create a directory for rainloop in the Apache2 web doc root area:
+# Preamble
 #
-% pushd /var/www/html
-% sudo mkdir rainloop-testuser
-% sudo chown testuser rainloop-testuser
-%
-% cd rainloop-testuser/
-% php "$source_dir/rainloop-installer.php"
 
-       [RainLoop Webmail Installer]
+Assuming you have gone through the Apache James email server setup
+described in
+
+    ../email-server/README.txt
+
+And have setup a domain and (as a minimum) 2 email user accounts
+to experiment with then ...
+
+#
+# Setup Rainloop Webmail Client
+#
+
+The rainloop installer checks for supporting packages, If any are
+missing a message is generated identifying them.  This is how we
+figured out that some additional php-flavoured packages needed to be
+installed.
+
+    sudo mkdir /var/www/html/rainloop-$USER
+    sudo chown $USER /var/www/html/rainloop-$USER
+
+    rainloop_installer_home="$PWD"
+
+    pushd "/var/www/html/rainloop-$USER"
+
+    php "$rainloop_installer_home/rainloop-installer.php"
+
+#----
+ [RainLoop Webmail Installer]
 
 
  * Connecting to repository ...
@@ -27,23 +39,50 @@ assuming your username is 'testuser'
  * Complete installing!
 
  * [Success] Installation is finished!
+#----
 
-% ls
-data  index.php  rainloop  rainloop-installer.php
+    ls
+#----
+  data  index.php  rainloop
+#----
 
-# Return to the directory with README.txt and rainloop-installer.txt
+Return to the directory with README.txt and rainloop-installer.txt
+
+Rainloop requires 'data' to be restirct access so it is only accessible by the web-server
+
+   chmod go-rwx data
+   sudo chown -R www-data:www-data data
+
+
+Now visit the rainloop admin login panel in your web browser:
+
+    echo  http://email-ai.interactwith.us/interactwith.us/rainloop-$USER/?admin
+
+At this stage, default password to log in, as noted in rainloop website
+
+Through the rainloop admin console, add an email domain:
+
+    email-ai.interactwith.us
+    
+    imap server is localhost, port is 2143
+    smtp server is localhost, port is 2525
+
+Select the 'test' button to confirm things are working
+
+    popd
+
 #
-% popd
+# Access an email account
+#
 
-In a web browser, go to email-ai.interactwith.us/rainloop-testuser/?admin
+Now log in to access an example mailbox
 
-default password to log in
+    echo  http://email-ai.interactwith.us/interactwith.us/rainloop-$USER/
 
-add domain
-imap server is localhost, port is 2143
-smtp server is localhost, port is 2525
+Paste into web browser
 
-Then go to email-ai.interactwith.us/rainloop-uruserhere/
+Log in with your email, password is whatever you set of a user email account in *Apache* *James*
 
 
-Log in with your email, password is whatever you set of a user email account in *james*
+====
+
