@@ -46,6 +46,13 @@ Then view the log files:
 
   less logs/wrapper.log
 
+
+
+To check what ports are open:
+
+    nmap -p0-10000 localhost
+    
+
 To user the email server, you will need to create a domain and some users
 
   ./bin/james-cli.sh -h localhost -p 2999 AddDomain email-ai.interactwith.us
