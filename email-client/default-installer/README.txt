@@ -23,10 +23,12 @@ installed.
     sudo chown $USER /var/www/html/rainloop-$USER
 
     rainloop_installer_home="$PWD"
-
+    
     pushd "/var/www/html/rainloop-$USER"
+    /bin/cp "$rainloop_installer_home/rainloop-installer.php" .
 
-    php "$rainloop_installer_home/rainloop-installer.php"
+    php ./rainloop-installer.php
+	
 
 #----
  [RainLoop Webmail Installer]
