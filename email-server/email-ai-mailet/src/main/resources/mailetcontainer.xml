@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<mailetcontainer enableJmx="true">
+
+    <processors>
+        <processor state="root" enableJmx="true">
+            <mailet match="All" class="org.example.EmailMailet"/>
+
+        </processor>
+
+    </processors>
+
+</mailetcontainer>
+
