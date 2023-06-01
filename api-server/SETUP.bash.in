@@ -1,0 +1,14 @@
+
+# Copy this file to be:
+#  SETUP.bash
+#
+# Then edit it so it includes the API key for OPENAI
+# and
+# The port number that matches your 'thousands' port block allocation
+
+export OPENAI_API_KEY="***Change Me***"
+echo "Set OPENAI_API_KEY to: $OPENAI_API_KEY"
+
+export EMAIL_AI_LOCAL_PORT=XXXX
+echo "Set EMAIL_AI_LOCAL_PORT to: $EMAIL_AI_LOCAL_PORT"
+
