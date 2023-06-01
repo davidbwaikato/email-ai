@@ -1,9 +1,9 @@
-const fs      = require('fs');
-const path    = require('path');
-const express = require('express');
-const cors    = require('cors');
-const http    = require('http');
-
+const fs         = require('fs');
+const path       = require('path');
+const express    = require('express');
+const cors       = require('cors');
+const http       = require('http');
+const bodyParser = require('body-parser')
 
 
 const { Configuration, OpenAIApi } = require("openai");
@@ -24,6 +24,9 @@ const server = http.createServer(app);
 const httpHost = process.env.EMAIL_AI_LOCAL_HOST || "localhost";
 const httpPort = process.env.EMAIL_AI_LOCAL_PORT || 3000;
 const httpLocalServer = "http://" + httpHost + ":" + httpPort;
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 
 console.log("Allowing CORS access");
 app.use(cors());
@@ -55,10 +58,8 @@ app.get('/getInfoAdvanced/:testParam', (req, res) => {
 
 });
 
-app.get('/tldr', async (req, res) => {
-
-    const text_in = req.query.text
-    
+async function processTLDR(text_in)
+{
     const response = await openai.createCompletion({
 	model: "text-davinci-003",
 	prompt: text_in,
@@ -70,6 +71,17 @@ app.get('/tldr', async (req, res) => {
     });
 
     const text_out = response.data.choices
+
+    console.log("**** text_out = " + text_out);
+    
+    return text_out;
+}
+
+app.get('/tldr', async (req, res) => {
+
+    const text_in = req.query.text
+
+    const text_out = await processTLDR(text_in);
     
     returnJSON = { "status": "ok", "info": { "text": text_out } };
     
@@ -77,6 +89,21 @@ app.get('/tldr', async (req, res) => {
     res.end(JSON.stringify(returnJSON));    	   
 
 });
+
+
+app.post('/tldr', async (req, res) => {
+    let data = req.body;
+    
+    let text_in = data.text;
+
+    const text_out = await processTLDR(text_in)
+    
+    returnJSON = { "status": "ok", "info": { "text": text_out } };
+    
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+    
+})
 
 
 app.get('/', (req, res) => {
