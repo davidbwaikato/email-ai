@@ -22,13 +22,14 @@ public class EmailMailet extends GenericMailet{
 
     @Override
     public void service(Mail mail) throws MessagingException {
+        LOGGER.debug("SERVICE RAN");
         try {
             MimeMessage message = mail.getMessage();
 
             if (attachTLDR(message)) {
                 message.saveChanges();
             } else {
-                LOGGER.info("Unable to add footer to mail {}", mail.getName());
+                LOGGER.info("Unable to add tldr to mail {}", mail.getName());
             }
         } catch (IOException ioe) {
             throw new MessagingException("Could not read message", ioe);
@@ -36,8 +37,8 @@ public class EmailMailet extends GenericMailet{
     }
 
     private boolean attachTLDR(MimePart part) throws IOException, MessagingException {
+        LOGGER.debug("attachTLDR ran");
         String contentType = part.getContentType();
-
 
        if (part.getContent() instanceof String) {
             Optional<String> content = attachTLDRToTextPart(part);
@@ -65,11 +66,12 @@ public class EmailMailet extends GenericMailet{
             }
             return added;
         }
-        //Give up... we won't attach the footer to this MimePart
+        //Give up... we won't attach the tldr to this MimePart
         return false;
 
     }
     private Optional<String> attachTLDRToTextPart(MimePart part) throws MessagingException, IOException {
+        LOGGER.debug("attachTLDRToTextPart ran");
         String content = (String) part.getContent();
         if (part.isMimeType("text/plain")) {
             return Optional.of(attachTLDRToText(content));
@@ -82,6 +84,7 @@ public class EmailMailet extends GenericMailet{
 
     private String attachTLDRToText(String content) throws MessagingException,
             IOException {
+        LOGGER.debug("attachTLDRToText RAN");
         StringBuilder builder = new StringBuilder("hi from emma");
         builder.append(CARRIAGE_RETURN);
         builder.append(CARRIAGE_RETURN);
@@ -91,18 +94,20 @@ public class EmailMailet extends GenericMailet{
 
 
     private boolean attachTLDRToFirstPart(MimeMultipart multipart) throws MessagingException, IOException {
+        LOGGER.debug("attachTLDRToFirstPart RAN");
         MimeBodyPart firstPart = (MimeBodyPart) multipart.getBodyPart(0);
         return attachTLDR(firstPart);
     }
 
     private boolean attachTLDRToAllSubparts(MimeMultipart multipart) throws MessagingException, IOException {
+        LOGGER.debug("attachTLDRToAllSubparts RAN");
         int count = multipart.getCount();
-        boolean isFooterAttached = false;
+        boolean isTLDRAttached = false;
         for (int index = 0; index < count; index++) {
             MimeBodyPart mimeBodyPart = (MimeBodyPart) multipart.getBodyPart(index);
-            isFooterAttached |= attachTLDR(mimeBodyPart);
+            isTLDRAttached |= attachTLDR(mimeBodyPart);
         }
-        return isFooterAttached;
+        return isTLDRAttached;
     }
 
 
