@@ -1,12 +1,15 @@
 #!/bin/bash
 
 
-if [ "x$EMAIL_AI_LOCAL_PORT" = "x" ] ; then
-    echo ""
-    echo "Environment variable EMAIL_AI_LOCAL_PORT not set" >&2
-    echo ""
+if [ ! -f SETUP.bash ] ; then
+    echo "" >&2
+    echo "Failed to find: SETUP.bash" >&2
+    echo "Have you remembered to create SETUP.bash based on SETUP.bash.in?" >&2
+    echo "" >&2
     exit 1
 fi
+
+source ./SETUP.bash
 
 
 curl -X POST \
