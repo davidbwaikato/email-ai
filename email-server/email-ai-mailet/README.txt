@@ -15,7 +15,7 @@ Add to:
 
 Inside the first <processors> <process> element:
 
-    <mailet match="All" class="org.example.EmailMailet"/>
+    <mailet match="All" class="org.example.EmailAIMailet"/>
 
 
 Should look like:
@@ -29,7 +29,7 @@ Should look like:
     <!-- This configuration is a sample configuration for the root processor. -->
     <processor state="root" enableJmx="true">
 
-      <mailet match="All" class="org.example.EmailMailet"/>
+      <mailet match="All" class="org.example.EmailAIMailet"/>
 
 
 

@@ -3,7 +3,7 @@
 
     <processors>
         <processor state="root" enableJmx="true">
-            <mailet match="All" class="org.example.EmailMailet"/>
+            <mailet match="All" class="org.example.EmailAIMailet"/>
 
         </processor>
 
