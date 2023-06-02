@@ -15,10 +15,15 @@ import org.apache.mailet.base.RFC2822Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.ibm.icu.lang.UCharacter.LineBreak.CARRIAGE_RETURN;
-
 public class EmailMailet extends GenericMailet{
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailMailet.class);
+    private static final String CARRIAGE_RETURN = "\r\n";
+
+    @Override
+    public String getMailetInfo() {
+        return "Add TLDR Mailet";
+    }
 
     @Override
     public void service(Mail mail) throws MessagingException {
