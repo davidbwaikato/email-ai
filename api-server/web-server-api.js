@@ -72,7 +72,10 @@ async function processTLDR(text_in)
 
     const text_out = response.data.choices
 
-    console.log("**** text_out = " + text_out);
+    console.log("processTLDR() away to return the JavaScript Object:");
+    console.log("----");
+    console.log(JSON.stringify(text_out));
+    console.log("----");
     
     return text_out;
 }
