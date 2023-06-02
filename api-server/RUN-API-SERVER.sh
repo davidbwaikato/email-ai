@@ -7,7 +7,16 @@ if [ ! -f SETUP.bash ] ; then
     exit 1
 fi
 
+echo "----"
+echo "Setting the following Environment Variables:"
 source ./SETUP.bash
+echo "----"
+
+echo ""
+echo "----"
+echo "Running: node ./web-server-api.js"
+echo "[Press ^C to stop the server running]"
+echo "----"
 
 node ./web-server-api.js
 
