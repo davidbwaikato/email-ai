@@ -2,6 +2,8 @@ package org.example;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -17,7 +19,15 @@ import org.slf4j.LoggerFactory;
 public class EmailAIMailet extends GenericMailet{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailAIMailet.class);
+    private static final String HTML_BR_TAG = "<br />";
     private static final String CARRIAGE_RETURN = "\r\n";
+    private static final Pattern BODY_CLOSING_TAG = Pattern.compile("((?i:</body>))");
+    private String plainTextTLDR;
+
+    @Override
+    public void init() throws MessagingException {
+        plainTextTLDR = getInitParameter("text");
+    }
 
     @Override
     public String getMailetInfo() {
@@ -96,6 +106,23 @@ public class EmailAIMailet extends GenericMailet{
         return builder.toString();
     }
 
+    private String attachTLDRToHTML(String content) throws MessagingException,
+            IOException {
+
+        /* This HTML part may have a closing <BODY> tag.  If so, we
+         * want to insert out footer immediately prior to that tag.
+         */
+        Matcher matcher = BODY_CLOSING_TAG.matcher(content);
+        if (!matcher.find()) {
+            return content + getTLDRHTML();
+        }
+        int insertionIndex = matcher.start(matcher.groupCount() - 1);
+        return new StringBuilder()
+                .append(content, 0, insertionIndex)
+                .append(getTLDRHTML())
+                .append(content.substring(insertionIndex))
+                .toString();
+    }
 
     private boolean attachTLDRToFirstPart(MimeMultipart multipart) throws MessagingException, IOException {
         LOGGER.debug("attachTLDRToFirstPart RAN");
@@ -112,6 +139,16 @@ public class EmailAIMailet extends GenericMailet{
             isTLDRAttached |= attachTLDR(mimeBodyPart);
         }
         return isTLDRAttached;
+    }
+
+
+    private String getTLDRText() {
+        return plainTextTLDR;
+    }
+
+    private String getTLDRHTML() {
+        String text = getTLDRText();
+        return HTML_BR_TAG + text.replaceAll(CARRIAGE_RETURN, HTML_BR_TAG);
     }
 
 
