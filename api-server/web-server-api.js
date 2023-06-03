@@ -93,21 +93,64 @@ app.get('/tldr', async (req, res) => {
 
 });
 
+async function processSubject(text_in)
+{
+    const response = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: text_in,
+        temperature: 0.7,
+        max_tokens: 30,
+        n: 1,
+	stop: '\n'
+    });
+
+    const text_out = response.data.choices
+
+    console.log("processSubject() away to return the JavaScript Object:");
+    console.log("----");
+    console.log(JSON.stringify(text_out));
+    console.log("----");
+
+return text_out;
+}
+
+app.post('/subject', async (req, res) => {
+    let data = req.body;
+    let text_in = data.text;
+
+    const subject = await processSubject(text_in)
+
+    returnJSON = { "status": "ok", "info": { "Subject": subject } };
+
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+});
+
+app.get('/subject', async (req, res) => {
+
+    const text_in = req.query.text
+
+    const text_out = await processSubject(text_in);
+
+    returnJSON = { "status": "ok", "info": { "text": text_out } };
+
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+
+});
 
 app.post('/tldr', async (req, res) => {
     let data = req.body;
-    
     let text_in = data.text;
 
-    const text_out = await processTLDR(text_in)
-    
-    returnJSON = { "status": "ok", "info": { "text": text_out } };
-    
+    const text_out = await processTLDR(text_in);
+
+    returnJSON = {"status": "OK", "info": { "text": text_out}};
+
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(returnJSON));
-    
-})
 
+});
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
