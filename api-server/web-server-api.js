@@ -100,8 +100,9 @@ async function processSubject(text_in)
         prompt: text_in,
         temperature: 0.7,
         max_tokens: 30,
-        n: 1,
-	stop: '\n'
+        top_p: 1.0,
+        frequency_penalty: 0.0,
+        presence_penalty: 1,
     });
 
     const text_out = response.data.choices
@@ -117,7 +118,7 @@ return text_out;
 app.post('/subject', async (req, res) => {
     let data = req.body;
     let text_in = data.text;
-
+    
     const subject = await processSubject(text_in)
 
     returnJSON = { "status": "ok", "info": { "Subject": subject } };
