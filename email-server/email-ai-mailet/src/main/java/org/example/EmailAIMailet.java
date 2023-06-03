@@ -22,7 +22,7 @@ public class EmailAIMailet extends GenericMailet{
 
     private static final String HTML_BR_TAG = "<br />";
     private static final String CARRIAGE_RETURN = "\r\n";
-    private static final Pattern BODY_CLOSING_TAG = Pattern.compile("((?i:</body>))");
+    private static final Pattern BODY_OPENING_TAG = Pattern.compile("((?i:<body>))");
 
 
     @Override
@@ -105,12 +105,12 @@ public class EmailAIMailet extends GenericMailet{
     private String attachTLDRToHTML(String content) throws MessagingException,
             IOException {
 
-        /* This HTML part may have a closing <BODY> tag.  If so, we
-         * want to insert out footer immediately prior to that tag.
+        /* This HTML part may have a opening <BODY> tag.  If so, we
+         * want to insert out TLDR immediately after that tag.
          */
-        Matcher matcher = BODY_CLOSING_TAG.matcher(content);
+        Matcher matcher = BODY_OPENING_TAG.matcher(content);
         if (!matcher.find()) {
-            return content + getTLDRHTML();
+            return  getTLDRHTML() + content;
         }
         int insertionIndex = matcher.start(matcher.groupCount() - 1);
         return new StringBuilder()
