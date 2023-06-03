@@ -42,7 +42,7 @@ public class EmailAIMailet extends GenericMailet{
             LOGGER.info("text was " + text);
             AIAPI aiapi = new AIAPI();
             tldrText = aiapi.getTLDR(text);
-
+            LOGGER.info("TDLR was " + tldrText);
             if (attachTLDR(message)) {
                 message.saveChanges();
             } else {
