@@ -86,8 +86,8 @@ public class EmailAIMailet extends GenericMailet{
         if (part.isMimeType("text/plain")) {
             return Optional.of(attachTLDRToText(content));
         }
-        else{
-            LOGGER.info("not plain text! "+ part.getContentType());
+        else if (part.isMimeType("text/html")){
+             return Optional.of(attachTLDRToHTML(content));
         }
         return Optional.empty();
     }
