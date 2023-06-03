@@ -19,15 +19,11 @@ import org.slf4j.LoggerFactory;
 public class EmailAIMailet extends GenericMailet{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailAIMailet.class);
+
     private static final String HTML_BR_TAG = "<br />";
     private static final String CARRIAGE_RETURN = "\r\n";
     private static final Pattern BODY_CLOSING_TAG = Pattern.compile("((?i:</body>))");
-    private String plainTextTLDR;
 
-    @Override
-    public void init() throws MessagingException {
-        plainTextTLDR = getInitParameter("text");
-    }
 
     @Override
     public String getMailetInfo() {
@@ -99,7 +95,7 @@ public class EmailAIMailet extends GenericMailet{
     private String attachTLDRToText(String content) throws MessagingException,
             IOException {
         LOGGER.info("attachTLDRToText RAN");
-        StringBuilder builder = new StringBuilder("hi from emma");
+        StringBuilder builder = new StringBuilder(getTLDRText());
         builder.append(CARRIAGE_RETURN);
         builder.append(CARRIAGE_RETURN);
         builder.append(content);
@@ -143,7 +139,7 @@ public class EmailAIMailet extends GenericMailet{
 
 
     private String getTLDRText() {
-        return plainTextTLDR;
+        return "hi from emma";
     }
 
     private String getTLDRHTML() {
