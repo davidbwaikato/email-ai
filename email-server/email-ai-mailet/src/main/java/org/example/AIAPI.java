@@ -16,7 +16,11 @@ public class AIAPI {
         Gson gson =  new Gson();
         String response = getTLDRJson(text);
         TLDRResponse tldrResponse = gson.fromJson(response, TLDRResponse.class);
-        return tldrResponse.info.text.get(0).text;
+        StringBuilder builder = new StringBuilder();
+        for (TLDRText tldrText: tldrResponse.info.text) {
+            builder.append(tldrText.text);
+        }
+        return builder.toString();
     }
 
     private String getTLDRJson(String text) throws Exception {
