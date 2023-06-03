@@ -36,7 +36,7 @@ public class EmailAIMailet extends GenericMailet{
 
     @Override
     public void service(Mail mail) throws MessagingException {
-        LOGGER.debug("SERVICE RAN");
+        LOGGER.info("SERVICE RAN");
         try {
             MimeMessage message = mail.getMessage();
 
@@ -51,7 +51,7 @@ public class EmailAIMailet extends GenericMailet{
     }
 
     private boolean attachTLDR(MimePart part) throws IOException, MessagingException {
-        LOGGER.debug("attachTLDR ran");
+        LOGGER.info("attachTLDR ran");
         String contentType = part.getContentType();
 
        if (part.getContent() instanceof String) {
@@ -85,7 +85,7 @@ public class EmailAIMailet extends GenericMailet{
 
     }
     private Optional<String> attachTLDRToTextPart(MimePart part) throws MessagingException, IOException {
-        LOGGER.debug("attachTLDRToTextPart ran");
+        LOGGER.info("attachTLDRToTextPart ran");
         String content = (String) part.getContent();
         if (part.isMimeType("text/plain")) {
             return Optional.of(attachTLDRToText(content));
@@ -98,7 +98,7 @@ public class EmailAIMailet extends GenericMailet{
 
     private String attachTLDRToText(String content) throws MessagingException,
             IOException {
-        LOGGER.debug("attachTLDRToText RAN");
+        LOGGER.info("attachTLDRToText RAN");
         StringBuilder builder = new StringBuilder("hi from emma");
         builder.append(CARRIAGE_RETURN);
         builder.append(CARRIAGE_RETURN);
@@ -125,13 +125,13 @@ public class EmailAIMailet extends GenericMailet{
     }
 
     private boolean attachTLDRToFirstPart(MimeMultipart multipart) throws MessagingException, IOException {
-        LOGGER.debug("attachTLDRToFirstPart RAN");
+        LOGGER.info("attachTLDRToFirstPart RAN");
         MimeBodyPart firstPart = (MimeBodyPart) multipart.getBodyPart(0);
         return attachTLDR(firstPart);
     }
 
     private boolean attachTLDRToAllSubparts(MimeMultipart multipart) throws MessagingException, IOException {
-        LOGGER.debug("attachTLDRToAllSubparts RAN");
+        LOGGER.info("attachTLDRToAllSubparts RAN");
         int count = multipart.getCount();
         boolean isTLDRAttached = false;
         for (int index = 0; index < count; index++) {
