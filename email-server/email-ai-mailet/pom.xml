@@ -21,6 +21,13 @@
             <version>3.7.4</version>
         </dependency>
         <!-- other dependencies -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.16.1</version>
+        </dependency>
     </dependencies>
+
+
 
 </project>

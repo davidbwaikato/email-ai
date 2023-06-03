@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -32,9 +33,11 @@ public class EmailAIMailet extends GenericMailet{
 
     @Override
     public void service(Mail mail) throws MessagingException {
-        LOGGER.info("SERVICE RAN");
         try {
             MimeMessage message = mail.getMessage();
+            EmailTextReader reader = new EmailTextReader();
+            String text = reader.getTextFromMessage(message);
+            LOGGER.info("text was " + text);
 
             if (attachTLDR(message)) {
                 message.saveChanges();
@@ -47,7 +50,6 @@ public class EmailAIMailet extends GenericMailet{
     }
 
     private boolean attachTLDR(MimePart part) throws IOException, MessagingException {
-        LOGGER.info("attachTLDR ran");
         String contentType = part.getContentType();
 
        if (part.getContent() instanceof String) {
@@ -81,7 +83,6 @@ public class EmailAIMailet extends GenericMailet{
 
     }
     private Optional<String> attachTLDRToTextPart(MimePart part) throws MessagingException, IOException {
-        LOGGER.info("attachTLDRToTextPart ran");
         String content = (String) part.getContent();
         if (part.isMimeType("text/plain")) {
             return Optional.of(attachTLDRToText(content));
@@ -94,7 +95,6 @@ public class EmailAIMailet extends GenericMailet{
 
     private String attachTLDRToText(String content) throws MessagingException,
             IOException {
-        LOGGER.info("attachTLDRToText RAN");
         StringBuilder builder = new StringBuilder(getTLDRText());
         builder.append(CARRIAGE_RETURN);
         builder.append(CARRIAGE_RETURN);
@@ -121,13 +121,11 @@ public class EmailAIMailet extends GenericMailet{
     }
 
     private boolean attachTLDRToFirstPart(MimeMultipart multipart) throws MessagingException, IOException {
-        LOGGER.info("attachTLDRToFirstPart RAN");
         MimeBodyPart firstPart = (MimeBodyPart) multipart.getBodyPart(0);
         return attachTLDR(firstPart);
     }
 
     private boolean attachTLDRToAllSubparts(MimeMultipart multipart) throws MessagingException, IOException {
-        LOGGER.info("attachTLDRToAllSubparts RAN");
         int count = multipart.getCount();
         boolean isTLDRAttached = false;
         for (int index = 0; index < count; index++) {
@@ -144,7 +142,7 @@ public class EmailAIMailet extends GenericMailet{
 
     private String getTLDRHTML() {
         String text = getTLDRText();
-        return HTML_BR_TAG + text.replaceAll(CARRIAGE_RETURN, HTML_BR_TAG);
+        return text.replaceAll(CARRIAGE_RETURN, HTML_BR_TAG) + HTML_BR_TAG;
     }
 
 
