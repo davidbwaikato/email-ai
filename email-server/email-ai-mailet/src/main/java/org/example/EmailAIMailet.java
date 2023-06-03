@@ -14,6 +14,7 @@ import javax.mail.internet.MimePart;
 import org.apache.mailet.Mail;
 import org.apache.mailet.base.GenericMailet;
 import org.apache.mailet.base.RFC2822Headers;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +25,7 @@ public class EmailAIMailet extends GenericMailet{
     private static final String HTML_BR_TAG = "<br />";
     private static final String CARRIAGE_RETURN = "\r\n";
     private static final Pattern BODY_OPENING_TAG = Pattern.compile("((?i:<body>))");
+    private String tldrText = null;
 
 
     @Override
@@ -38,6 +40,8 @@ public class EmailAIMailet extends GenericMailet{
             EmailTextReader reader = new EmailTextReader();
             String text = reader.getTextFromMessage(message);
             LOGGER.info("text was " + text);
+            AIAPI aiapi = new AIAPI();
+            tldrText = aiapi.getTLDR(text);
 
             if (attachTLDR(message)) {
                 message.saveChanges();
@@ -46,6 +50,9 @@ public class EmailAIMailet extends GenericMailet{
             }
         } catch (IOException ioe) {
             throw new MessagingException("Could not read message", ioe);
+        }
+        catch (Exception e){
+            throw new MessagingException("API call failed", e);
         }
     }
 
@@ -137,7 +144,7 @@ public class EmailAIMailet extends GenericMailet{
 
 
     private String getTLDRText() {
-        return "hi from emma";
+        return tldrText;
     }
 
     private String getTLDRHTML() {
