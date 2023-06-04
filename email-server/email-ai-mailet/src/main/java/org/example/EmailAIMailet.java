@@ -105,7 +105,6 @@ public class EmailAIMailet extends GenericMailet{
         StringBuilder builder = new StringBuilder(getTLDRText());
         builder.append(CARRIAGE_RETURN);
         builder.append(CARRIAGE_RETURN);
-        builder.append("TLDR:");
         builder.append(content);
         return builder.toString();
     }
