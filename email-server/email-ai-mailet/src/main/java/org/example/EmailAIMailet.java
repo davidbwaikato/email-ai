@@ -105,6 +105,8 @@ public class EmailAIMailet extends GenericMailet{
         StringBuilder builder = new StringBuilder(getTLDRText());
         builder.append(CARRIAGE_RETURN);
         builder.append(CARRIAGE_RETURN);
+        builder.append("TL;DR:");
+        builder.append(CARRIAGE_RETURN);
         builder.append(content);
         return builder.toString();
     }
@@ -117,7 +119,7 @@ public class EmailAIMailet extends GenericMailet{
          */
         Matcher matcher = BODY_OPENING_TAG.matcher(content);
         if (!matcher.find()) {
-            return  getTLDRHTML() + content;
+            return  "TL;DR: " + getTLDRHTML() + content;
         }
         int insertionIndex = matcher.start(matcher.groupCount() - 1);
         return new StringBuilder()
