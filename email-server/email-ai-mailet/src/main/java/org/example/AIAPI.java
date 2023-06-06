@@ -22,8 +22,8 @@ public class AIAPI {
         LOGGER.info("response was " + response);
         KeywordsResponse keywordsResponse = gson.fromJson(response, KeywordsResponse.class);
         StringBuilder builder = new StringBuilder();
-        for (KeywordsText keywordsText: keywordsResponse.info.text) {
-            builder.append(keywordsText.text);
+        for (KeywordsText keywordsText: keywordsResponse.info.keywordsList) {
+            builder.append(keywordsText.Keywords);
         }
         return builder.toString();
     }

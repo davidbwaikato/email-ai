@@ -103,7 +103,6 @@ public class EmailAIMailet extends GenericMailet{
         StringBuilder builder = new StringBuilder(getKeywordsText());
         builder.append(CARRIAGE_RETURN);
         builder.append(CARRIAGE_RETURN);
-        builder.append("TL;DR:");
         builder.append(CARRIAGE_RETURN);
         builder.append(content);
         return builder.toString();
