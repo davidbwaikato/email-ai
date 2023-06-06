@@ -25,7 +25,7 @@ public class AIAPI {
         //for (KeywordsText keywordsText: keywordsResponse.info.keywordsList) {
             //builder.append(keywordsText.Keywords);
         //}
-        builder.append(keywordsResponse.info.keywordsListStr);
+        builder.append(keywordsResponse.info.Keywords);
         return builder.toString();
     }
 
