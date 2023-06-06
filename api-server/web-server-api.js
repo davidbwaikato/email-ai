@@ -140,19 +140,6 @@ app.get('/subject', async (req, res) => {
 
 });
 
-app.get('/subject', async (req, res) => {
-
-    const text_in = req.query.text
-
-    const text_out = await processSubject(text_in);
-
-    returnJSON = { "status": "ok", "info": { "text": text_out } };
-
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(returnJSON));
-
-});
-
 app.post('/grammify', async (req, res) => {
     let data = req.body;
     let text_in = data.text;
@@ -166,18 +153,17 @@ app.post('/grammify', async (req, res) => {
 
 });
 
-<<<<<<< Updated upstream
 async function processKeywords(text_in)
 {
     const response = await openai.createCompletion({
-	 model: "text-davinci-003",
-  prompt: text_in,
-  temperature: 0.5,
-  max_tokens: 60,
-  top_p: 1.0,
-  frequency_penalty: 0.8,
-  presence_penalty: 0.0,
-
+	model: "text-davinci-003",
+	prompt: text_in,
+	temperature: 0.5,
+	max_tokens: 60,
+	top_p: 1.0,
+	frequency_penalty: 0.8,
+	presence_penalty: 0.0,
+	
     });
     const text_out = response.data.choices
 
@@ -205,13 +191,6 @@ app.get('/keywords', async (req, res) => {
     const text_in = req.query.text
 
     const text_out = await processKeywords(text_in);
-=======
-app.get('/grammify', async (req, res) => {
-
-    const text_in = req.query.text
-
-    const text_out = await processGrammify(text_in);
->>>>>>> Stashed changes
 
     returnJSON = { "status": "ok", "info": { "text": text_out } };
 
@@ -220,8 +199,19 @@ app.get('/grammify', async (req, res) => {
 
 });
 
-<<<<<<< Updated upstream
-=======
+app.get('/grammify', async (req, res) => {
+
+    const text_in = req.query.text
+
+    const text_out = await processGrammify(text_in);
+
+    returnJSON = { "status": "ok", "info": { "text": text_out } };
+
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+
+});
+
 async function processGrammify(text_in)
 {
     const response = await openai.createCompletion({
@@ -241,9 +231,8 @@ async function processGrammify(text_in)
     console.log(JSON.stringify(text_out));
     console.log("----");
 
-return text_out;
+    return text_out;
 }
->>>>>>> Stashed changes
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
