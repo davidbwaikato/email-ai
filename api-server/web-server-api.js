@@ -153,10 +153,56 @@ app.post('/tldr', async (req, res) => {
 
 });
 
+async function processKeywords(text_in)
+{
+    const response = await openai.createCompletion({
+	 model: "text-davinci-003",
+  prompt: text_in,
+  temperature: 0.5,
+  max_tokens: 60,
+  top_p: 1.0,
+  frequency_penalty: 0.8,
+  presence_penalty: 0.0,
+
+    });
+    const text_out = response.data.choices
+
+    console.log("processKeywords() away to return the JavaScript Objects:");
+    console.log("----");
+    console.log(JSON.stringify(text_out));
+    console.log("----");
+
+    return text_out;
+}
+app.post('/keywords', async(req, res) =>{
+    let data = req.body;
+    let text_in = data.text;
+    
+    const subject = await processKeywords(text_in)
+
+    returnJSON = { "status": "ok", "info": { "Subject": subject } };
+
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+});
+
+app.get('/keywords', async (req, res) => {
+
+    const text_in = req.query.text
+
+    const text_out = await processKeywords(text_in);
+
+    returnJSON = { "status": "ok", "info": { "text": text_out } };
+
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+
+});
+
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
-
 
 // The following can be used as a 'catch all', if required/needed
 app.get('*', (req, res) => {
