@@ -1,5 +1,5 @@
 package org.example;
 
-public class TLDRText {
+public class KeywordsText {
     String text;
 }

@@ -1,7 +1,6 @@
 package org.example;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,23 +15,23 @@ public class AIAPI {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AIAPI.class);
 
-    public String getTLDR(String text) throws Exception {
-        //http://email-ai.interactwith.us/api-enc4/tldr
+    public String getKeywords(String text) throws Exception {
+        //http://email-ai.interactwith.us/api-enc4/keywords
         Gson gson =  new Gson();
-        String response = getTLDRJson(text);
+        String response = getKeywordsJson(text);
         LOGGER.info("response was " + response);
-        TLDRResponse tldrResponse = gson.fromJson(response, TLDRResponse.class);
+        KeywordsResponse keywordsResponse = gson.fromJson(response, KeywordsResponse.class);
         StringBuilder builder = new StringBuilder();
-        for (TLDRText tldrText: tldrResponse.info.text) {
-            builder.append(tldrText.text);
+        for (KeywordsText keywordsText: keywordsResponse.info.text) {
+            builder.append(keywordsText.text);
         }
         return builder.toString();
     }
 
-    private String getTLDRJson(String text) throws Exception {
+    private String getKeywordsJson(String text) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://email-ai.interactwith.us/api-enc4/tldr?text=" + URLEncoder.encode(text, StandardCharsets.UTF_8)))
+                .uri(URI.create("http://email-ai.interactwith.us/api-enc4/keywords?text=" + URLEncoder.encode(text, StandardCharsets.UTF_8)))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

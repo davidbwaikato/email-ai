@@ -1,7 +1,6 @@
 package org.example;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -14,7 +13,6 @@ import javax.mail.internet.MimePart;
 import org.apache.mailet.Mail;
 import org.apache.mailet.base.GenericMailet;
 import org.apache.mailet.base.RFC2822Headers;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,12 +23,12 @@ public class EmailAIMailet extends GenericMailet{
     private static final String HTML_BR_TAG = "<br />";
     private static final String CARRIAGE_RETURN = "\r\n";
     private static final Pattern BODY_OPENING_TAG = Pattern.compile("((?i:<body>))");
-    private String tldrText = null;
+    private String keywordsText = null;
 
 
     @Override
     public String getMailetInfo() {
-        return "Add TLDR Mailet";
+        return "Add keywords Mailet";
     }
 
     @Override
@@ -41,12 +39,12 @@ public class EmailAIMailet extends GenericMailet{
             String text = reader.getTextFromMessage(message);
             LOGGER.info("text was " + text);
             AIAPI aiapi = new AIAPI();
-            tldrText = aiapi.getTLDR(text);
-            LOGGER.info("TDLR was " + tldrText);
-            if (attachTLDR(message)) {
+            keywordsText = aiapi.getKeywords(text);
+            LOGGER.info("Keywords were " + keywordsText);
+            if (attachKeywords(message)) {
                 message.saveChanges();
             } else {
-                LOGGER.info("Unable to add tldr to mail {}", mail.getName());
+                LOGGER.info("Unable to add keywords to mail {}", mail.getName());
             }
         } catch (IOException ioe) {
             throw new MessagingException("Could not read message", ioe);
@@ -56,11 +54,11 @@ public class EmailAIMailet extends GenericMailet{
         }
     }
 
-    private boolean attachTLDR(MimePart part) throws IOException, MessagingException {
+    private boolean attachKeywords(MimePart part) throws IOException, MessagingException {
         String contentType = part.getContentType();
 
        if (part.getContent() instanceof String) {
-            Optional<String> content = attachTLDRToTextPart(part);
+            Optional<String> content = attachKeywordsToTextPart(part);
             if (content.isPresent()) {
                 part.setContent(content.get(), contentType);
                 part.setHeader(RFC2822Headers.CONTENT_TYPE, contentType);
@@ -71,7 +69,7 @@ public class EmailAIMailet extends GenericMailet{
         if (part.isMimeType("multipart/mixed")
                 || part.isMimeType("multipart/related")) {
             MimeMultipart multipart = (MimeMultipart) part.getContent();
-            boolean added = attachTLDRToFirstPart(multipart);
+            boolean added = attachKeywordsToFirstPart(multipart);
             if (added) {
                 part.setContent(multipart);
             }
@@ -79,30 +77,30 @@ public class EmailAIMailet extends GenericMailet{
 
         } else if (part.isMimeType("multipart/alternative")) {
             MimeMultipart multipart = (MimeMultipart) part.getContent();
-            boolean added = attachTLDRToAllSubparts(multipart);
+            boolean added = attachKeywordsToAllSubparts(multipart);
             if (added) {
                 part.setContent(multipart);
             }
             return added;
         }
-        //Give up... we won't attach the tldr to this MimePart
+        //Give up... we won't attach the keywords to this MimePart
         return false;
 
     }
-    private Optional<String> attachTLDRToTextPart(MimePart part) throws MessagingException, IOException {
+    private Optional<String> attachKeywordsToTextPart(MimePart part) throws MessagingException, IOException {
         String content = (String) part.getContent();
         if (part.isMimeType("text/plain")) {
-            return Optional.of(attachTLDRToText(content));
+            return Optional.of(attachKeywordsToText(content));
         }
         else if (part.isMimeType("text/html")){
-             return Optional.of(attachTLDRToHTML(content));
+             return Optional.of(attachKeywordsToHTML(content));
         }
         return Optional.empty();
     }
 
-    private String attachTLDRToText(String content) throws MessagingException,
+    private String attachKeywordsToText(String content) throws MessagingException,
             IOException {
-        StringBuilder builder = new StringBuilder(getTLDRText());
+        StringBuilder builder = new StringBuilder(getKeywordsText());
         builder.append(CARRIAGE_RETURN);
         builder.append(CARRIAGE_RETURN);
         builder.append("TL;DR:");
@@ -111,46 +109,46 @@ public class EmailAIMailet extends GenericMailet{
         return builder.toString();
     }
 
-    private String attachTLDRToHTML(String content) throws MessagingException,
+    private String attachKeywordsToHTML(String content) throws MessagingException,
             IOException {
 
         /* This HTML part may have a opening <BODY> tag.  If so, we
-         * want to insert out TLDR immediately after that tag.
+         * want to insert out keywords immediately after that tag.
          */
         Matcher matcher = BODY_OPENING_TAG.matcher(content);
         if (!matcher.find()) {
-            return  "TL;DR: " + getTLDRHTML() + content;
+            return  "Keywords: " + getKeywordsHTML() + content;
         }
         int insertionIndex = matcher.start(matcher.groupCount() - 1);
         return new StringBuilder()
                 .append(content, 0, insertionIndex)
-                .append(getTLDRHTML())
+                .append(getKeywordsHTML())
                 .append(content.substring(insertionIndex))
                 .toString();
     }
 
-    private boolean attachTLDRToFirstPart(MimeMultipart multipart) throws MessagingException, IOException {
+    private boolean attachKeywordsToFirstPart(MimeMultipart multipart) throws MessagingException, IOException {
         MimeBodyPart firstPart = (MimeBodyPart) multipart.getBodyPart(0);
-        return attachTLDR(firstPart);
+        return attachKeywords(firstPart);
     }
 
-    private boolean attachTLDRToAllSubparts(MimeMultipart multipart) throws MessagingException, IOException {
+    private boolean attachKeywordsToAllSubparts(MimeMultipart multipart) throws MessagingException, IOException {
         int count = multipart.getCount();
-        boolean isTLDRAttached = false;
+        boolean isKeywordsAttached = false;
         for (int index = 0; index < count; index++) {
             MimeBodyPart mimeBodyPart = (MimeBodyPart) multipart.getBodyPart(index);
-            isTLDRAttached |= attachTLDR(mimeBodyPart);
+            isKeywordsAttached |= attachKeywords(mimeBodyPart);
         }
-        return isTLDRAttached;
+        return isKeywordsAttached;
     }
 
 
-    private String getTLDRText() {
-        return tldrText;
+    private String getKeywordsText() {
+        return keywordsText;
     }
 
-    private String getTLDRHTML() {
-        String text = getTLDRText();
+    private String getKeywordsHTML() {
+        String text = getKeywordsText();
         return text.replaceAll(CARRIAGE_RETURN, HTML_BR_TAG) + HTML_BR_TAG;
     }
 
