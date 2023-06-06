@@ -22,9 +22,10 @@ public class AIAPI {
         LOGGER.info("response was " + response);
         KeywordsResponse keywordsResponse = gson.fromJson(response, KeywordsResponse.class);
         StringBuilder builder = new StringBuilder();
-        for (KeywordsText keywordsText: keywordsResponse.info.keywordsList) {
-            builder.append(keywordsText.Keywords);
-        }
+        //for (KeywordsText keywordsText: keywordsResponse.info.keywordsList) {
+            //builder.append(keywordsText.Keywords);
+        //}
+        builder.append(keywordsResponse.info.keywordsListStr);
         return builder.toString();
     }
 
