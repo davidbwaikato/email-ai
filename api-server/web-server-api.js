@@ -1,9 +1,9 @@
-const fs      = require('fs');
-const path    = require('path');
-const express = require('express');
-const cors    = require('cors');
-const http    = require('http');
-
+const fs         = require('fs');
+const path       = require('path');
+const express    = require('express');
+const cors       = require('cors');
+const http       = require('http');
+const bodyParser = require('body-parser')
 
 
 const { Configuration, OpenAIApi } = require("openai");
@@ -12,7 +12,7 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-
+//hello
 
 
 //
@@ -24,6 +24,9 @@ const server = http.createServer(app);
 const httpHost = process.env.EMAIL_AI_LOCAL_HOST || "localhost";
 const httpPort = process.env.EMAIL_AI_LOCAL_PORT || 3000;
 const httpLocalServer = "http://" + httpHost + ":" + httpPort;
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 
 console.log("Allowing CORS access");
 app.use(cors());
@@ -55,10 +58,8 @@ app.get('/getInfoAdvanced/:testParam', (req, res) => {
 
 });
 
-app.get('/tldr', async (req, res) => {
-
-    const text_in = req.query.text
-    
+async function processTLDR(text_in)
+{
     const response = await openai.createCompletion({
 	model: "text-davinci-003",
 	prompt: text_in,
@@ -70,6 +71,20 @@ app.get('/tldr', async (req, res) => {
     });
 
     const text_out = response.data.choices
+
+    console.log("processTLDR() away to return the JavaScript Object:");
+    console.log("----");
+    console.log(JSON.stringify(text_out));
+    console.log("----");
+    
+    return text_out;
+}
+
+app.get('/tldr', async (req, res) => {
+
+    const text_in = req.query.text
+
+    const text_out = await processTLDR(text_in);
     
     returnJSON = { "status": "ok", "info": { "text": text_out } };
     
@@ -78,11 +93,150 @@ app.get('/tldr', async (req, res) => {
 
 });
 
+async function processSubject(text_in)
+{
+    const response = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: text_in,
+        temperature: 0.7,
+        max_tokens: 30,
+        top_p: 1.0,
+        frequency_penalty: 0.0,
+        presence_penalty: 1,
+    });
+
+    const text_out = response.data.choices
+
+    console.log("processSubject() away to return the JavaScript Object:");
+    console.log("----");
+    console.log(JSON.stringify(text_out));
+    console.log("----");
+
+return text_out;
+}
+
+app.post('/subject', async (req, res) => {
+    let data = req.body;
+    let text_in = data.text;
+    
+    const subject = await processSubject(text_in)
+
+    returnJSON = { "status": "ok", "info": { "Subject": subject } };
+
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+});
+
+app.get('/subject', async (req, res) => {
+
+    const text_in = req.query.text
+
+    const text_out = await processSubject(text_in);
+
+    returnJSON = { "status": "ok", "info": { "text": text_out } };
+
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+
+});
+
+app.post('/grammify', async (req, res) => {
+    let data = req.body;
+    let text_in = data.text;
+
+    const text_out = await processGrammify(text_in);
+
+    returnJSON = {"status": "OK", "info": { "text": text_out}};
+
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+
+});
+
+async function processKeywords(text_in)
+{
+    const response = await openai.createCompletion({s
+	model: "text-davinci-003",
+	prompt:"Extract keywords from this text:\n\n" + text_in,
+	temperature: 0.5,
+	max_tokens: 60,
+	top_p: 1.0,
+	frequency_penalty: 0.8,
+	presence_penalty: 0.0,
+	
+    });
+    const text_out = response.data.choices
+
+    console.log("processKeywords() away to return the JavaScript Objects:");
+    console.log("----");
+    console.log(JSON.stringify(text_out));
+    console.log("----");
+
+    return text_out;
+}
+app.post('/keywords', async(req, res) =>{
+    let data = req.body;
+    let text_in = data.text;
+    
+    const keywords = await processKeywords(text_in)
+
+    returnJSON = { "status": "ok", "info": { "Keywords": keywords } };
+
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+});
+
+app.get('/keywords', async (req, res) => {
+
+    const text_in = req.query.text
+
+    const text_out = await processKeywords(text_in);
+
+    returnJSON = { "status": "ok", "info": { "text": text_out } };
+    
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+
+});
+
+app.get('/grammify', async (req, res) => {
+
+    const text_in = req.query.text
+
+    const text_out = await processGrammify(text_in);
+
+    returnJSON = { "status": "ok", "info": { "text": text_out } };
+
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(returnJSON));
+
+});
+
+async function processGrammify(text_in)
+{
+    const response = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: text_in,
+        temperature: 0.7,
+        max_tokens: 1000,
+        top_p: 1.0,
+        frequency_penalty: 0.0,
+        presence_penalty: 1,
+    });
+
+    const text_out = response.data.choices
+
+    console.log("processSubject() away to return the JavaScript Object:");
+    console.log("----");
+    console.log(JSON.stringify(text_out));
+    console.log("----");
+
+    return text_out;
+}
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
-
 
 // The following can be used as a 'catch all', if required/needed
 app.get('*', (req, res) => {
@@ -96,6 +250,5 @@ server.listen(httpPort, () => {
 
     console.log('Local server: ' + httpLocalServer);
 });
-
 
 
