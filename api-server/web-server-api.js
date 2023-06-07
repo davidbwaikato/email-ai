@@ -155,7 +155,7 @@ app.post('/grammify', async (req, res) => {
 
 async function processKeywords(text_in)
 {
-    const response = await openai.createCompletion({s
+    const response = await openai.createCompletion({
 	model: "text-davinci-003",
 	prompt:"Extract keywords from this text:\n\n" + text_in,
 	temperature: 0.5,
