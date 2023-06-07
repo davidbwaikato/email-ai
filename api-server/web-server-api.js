@@ -157,7 +157,7 @@ async function processKeywords(text_in)
 {
     const response = await openai.createCompletion({
 	model: "text-davinci-003",
-	prompt:"Extract keywords from this text:\n\n" + text_in,
+	prompt:"Extract a few keywords from this text:\n\n" + text_in,
 	temperature: 0.5,
 	max_tokens: 60,
 	top_p: 1.0,
@@ -165,7 +165,7 @@ async function processKeywords(text_in)
 	presence_penalty: 0.0,
 	
     });
-    const text_out = response.data.choices
+    const text_out = response.data.choices[0].text
 
     console.log("processKeywords() away to return the JavaScript Objects:");
     console.log("----");
@@ -192,7 +192,9 @@ app.get('/keywords', async (req, res) => {
 
     const text_out = await processKeywords(text_in);
 
-    returnJSON = { "status": "ok", "info": { "text": text_out } };
+    returnJSON = { "status": "ok", "info": { "Keywords": text_out } };
+
+     console.log(JSON.stringify(returnJSON));
     
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(returnJSON));
